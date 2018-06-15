@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">MyResto</string>
+    <string name="tit_main_activity">Realizar Pedido</string>
+    <string name="lblNombreCliente">Nombre</string>
+    <string name="lblDetallePedido">Ingrese su pedido detallado</string>
+    <string name="lblDelibery">Envio a Domicilio</string>
+    <string name="lblReservarMesa">Reservar Mesa</string>
+    <string name="cbIncluirPropina">Incluir Propina</string>
+    <string name="cbPermitirCancelar">Permitir Cancelar</string>
+    <string name="cbBebidaXL">Bebida XL</string>
+    <string name="btnConfirmar">Confirmar</string>
+    <string name="btnCancelar">Cancelar</string>
+    <string name="tbPagarAlEntregar">Pagar al entregar</string>
+    <string name= "tbDebitarTarjeta">Debitar de tarjeta de credito</string>
+    <string name="swNotificar">Notificar</string>
+</resources>
