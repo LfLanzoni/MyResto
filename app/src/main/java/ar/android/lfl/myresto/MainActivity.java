@@ -1,6 +1,7 @@
 package ar.android.lfl.myresto;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -71,10 +72,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("APP_MY_RESTO","Pedido confirmado!!!! ");
                 Log.d("APP_MY_RESTO",pedidoActual.toString());
                 //Agregamos el pedido a pedidoDAO
+
                 pedidoDAO.agregar(pedidoActual);
                 Intent intentPedido = new Intent(MainActivity.this,ListaPedidosActivity.class);
-                startActivity(intentPedido);
+                intentPedido.putExtra("lista", (Parcelable) pedidoDAO);
 
+                startActivity(intentPedido);
+                Log.d("PEDIDODAO",pedidoDAO.listarTodos().toString());
                 //reset pedido Actual
                 // limpiar la variable para poder cargar un nuevo pedido
                 pedidoActual = new Pedido();
@@ -93,8 +97,9 @@ public class MainActivity extends AppCompatActivity {
                 //limpiar Toggle Button
                 tgPago.setChecked(false);
 
-                //
+
             }
+
         });
 
     }
