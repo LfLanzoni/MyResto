@@ -1,5 +1,6 @@
 package ar.android.lfl.myresto;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +15,8 @@ import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import ar.android.lfl.myresto.modelo.Pedido;
-
+import ar.android.lfl.myresto.modelo.PedidoDAO;
+import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton rbDelibery;
     private RadioButton rbResarvaMesa;
     private ToggleButton tgPago;
-
+    private PedidoDAO pedidoDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         pedidoActual = new Pedido();
+        pedidoDAO= new PedidoDAOMemory();
         txtNombre = findViewById(R.id.txtNombreCliente);
         txtPedido = findViewById(R.id.txtDetallePedido);
         btnConfirmar = findViewById(R.id.btnConfirmar);
@@ -67,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"Pedido creado", Toast.LENGTH_LONG).show();
                 Log.d("APP_MY_RESTO","Pedido confirmado!!!! ");
                 Log.d("APP_MY_RESTO",pedidoActual.toString());
+                //Agregamos el pedido a pedidoDAO
+                pedidoDAO.agregar(pedidoActual);
+                Intent intentPedido = new Intent(MainActivity.this,ListaPedidosActivity.class);
+                startActivity(intentPedido);
+
+                //reset pedido Actual
                 // limpiar la variable para poder cargar un nuevo pedido
                 pedidoActual = new Pedido();
                 // limpiar el edit text en la pantalla
@@ -83,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 rbResarvaMesa.setChecked(false);
                 //limpiar Toggle Button
                 tgPago.setChecked(false);
+
+                //
             }
         });
 

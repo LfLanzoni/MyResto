@@ -11,6 +11,6 @@
     <string name="btnConfirmar">Confirmar</string>
     <string name="btnCancelar">Cancelar</string>
     <string name="tbPagarAlEntregar">Pagar al entregar</string>
-    <string name= "tbDebitarTarjeta">Debitar de tarjeta de credito</string>
+    <string name="tbDebitarTarjeta">Debitar de tarjeta de credito</string>
     <string name="swNotificar">Notificar</string>
 </resources>
