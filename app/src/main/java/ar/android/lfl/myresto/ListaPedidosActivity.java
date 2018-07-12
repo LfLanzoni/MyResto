@@ -26,7 +26,7 @@ public class ListaPedidosActivity extends AppCompatActivity {
         btnNuevoPedido = (Button) findViewById(R.id.btnNuevosPedidos);
         listaPedidos =(ListView) findViewById(R.id.listaPedidos);
 
-        Intent intentPedido = getIntent();
+        final Intent intentPedido = getIntent();
         pedidoDAO = new PedidoDAOMemory();
         pedidoDAO=intentPedido.getParcelableExtra("lista");
         Log.d("LISTA 2",pedidoDAO.listarTodos().toString());
@@ -36,7 +36,8 @@ public class ListaPedidosActivity extends AppCompatActivity {
         this.btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //VOLVER AL MAIN
+               // setResult(RESULT_OK,intentPedido);
+                finish();
             }
         });
     }

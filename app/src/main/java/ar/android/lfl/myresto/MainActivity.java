@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 pedidoDAO.agregar(pedidoActual);
                 Intent intentPedido = new Intent(MainActivity.this,ListaPedidosActivity.class);
                 intentPedido.putExtra("lista", (Parcelable) pedidoDAO);
-
                 startActivity(intentPedido);
+                //startActivityForResult(intentPedido,999);
                 Log.d("PEDIDODAO",pedidoDAO.listarTodos().toString());
                 //reset pedido Actual
                 // limpiar la variable para poder cargar un nuevo pedido
@@ -103,5 +103,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    /*protected void onActivityResult(int requestCode,int resultCode,Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode==999){
+            if(resultCode==RESULT_OK){
+
+            }
+        }
+    }*/
 
 }
