@@ -1,5 +1,7 @@
 package ar.android.lfl.myresto.modelo;
 
+import java.util.Objects;
+
 public class Pedido {
     private Integer id;
     private String nombre;
@@ -93,4 +95,20 @@ public class Pedido {
     public void setPagoAutomatico(Boolean pagoAutomatico) {
         this.pagoAutomatico = pagoAutomatico;
     }
+
+    @Override
+    public boolean equals (Object o){
+        if(this == o) return true;
+        if(o==null || getClass()!= o.getClass()) return false;
+        Pedido pedido = (Pedido) o ;
+        return Objects.equals(id,pedido.id);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(id);
+    }
+
+
+
 }

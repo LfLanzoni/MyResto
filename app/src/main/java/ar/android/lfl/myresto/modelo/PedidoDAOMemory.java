@@ -48,4 +48,9 @@ public class PedidoDAOMemory implements PedidoDAO, Parcelable {
             return new PedidoDAOMemory[size];
         }
     };
+
+    @Override
+    public void eliminar(Pedido pedido){
+        REPOSITORIO_PEDIDOS.remove(pedido);
+    }
 }

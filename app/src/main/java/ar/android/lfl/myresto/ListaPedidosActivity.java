@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import ar.android.lfl.myresto.modelo.Pedido;
 import ar.android.lfl.myresto.modelo.PedidoDAO;
@@ -40,6 +42,22 @@ public class ListaPedidosActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        this.listaPedidos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                int itemPosition = position;
+                Pedido itemValue = (Pedido) listaPedidos.getItemAtPosition(position);
+                //CODIGO PARA BORRAR EL PEDIDO DAO
+                pedidoDAO.eliminar(itemValue);
+                adaptadorPedido.notifyDataSetChanged();
+                Toast.makeText(getApplicationContext(),"Borrar elemento de posicion :"+itemPosition+
+                "  id: "+itemValue.getId()+" nombre: "+itemValue.getNombre(),Toast.LENGTH_LONG).show();
+
+                return false;
+            }
+        });
+
     }
 
 
