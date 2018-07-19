@@ -1,5 +1,7 @@
 package ar.android.lfl.myresto.modelo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Pedido {
@@ -12,16 +14,30 @@ public class Pedido {
     private Boolean incluyePropina;
     private Boolean enviarNotificaciones;
     private Boolean pagoAutomatico;
+    private List<ProductoMenu> itemPedidos;
     private static int idGenerator = 0;
 
 
     public Pedido(){
         this.id = ++Pedido.idGenerator;
+        this.itemPedidos = new ArrayList<>();
     }
 
     @Override
     public String toString() {
-        return nombre + " - "+ pedido;
+        return nombre;
+    }
+
+    public List<ProductoMenu> getItemPedidos() {
+        return itemPedidos;
+    }
+
+    public void setItemPedidos(List<ProductoMenu> itemPedidos) {
+        this.itemPedidos = itemPedidos;
+    }
+
+    public void addItemDetalle(DetallePedido prd){
+        this.itemPedidos.add(prd.getProductoPedido());
     }
 
     public Integer getId() {

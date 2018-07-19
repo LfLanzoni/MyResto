@@ -27,18 +27,14 @@ public class ListaPedidosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista_pedidos);
         btnNuevoPedido = (Button) findViewById(R.id.btnNuevosPedidos);
         listaPedidos =(ListView) findViewById(R.id.listaPedidos);
-
         final Intent intentPedido = getIntent();
         pedidoDAO = new PedidoDAOMemory();
         pedidoDAO=intentPedido.getParcelableExtra("lista");
-        Log.d("LISTA 2",pedidoDAO.listarTodos().toString());
-
         this.adaptadorPedido = new ArrayAdapter<>(ListaPedidosActivity.this,android.R.layout.simple_list_item_1,pedidoDAO.listarTodos());
         this.listaPedidos.setAdapter(this.adaptadorPedido);
         this.btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // setResult(RESULT_OK,intentPedido);
                 finish();
             }
         });
@@ -48,12 +44,10 @@ public class ListaPedidosActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 int itemPosition = position;
                 Pedido itemValue = (Pedido) listaPedidos.getItemAtPosition(position);
-                //CODIGO PARA BORRAR EL PEDIDO DAO
                 pedidoDAO.eliminar(itemValue);
                 adaptadorPedido.notifyDataSetChanged();
                 Toast.makeText(getApplicationContext(),"Borrar elemento de posicion :"+itemPosition+
                 "  id: "+itemValue.getId()+" nombre: "+itemValue.getNombre(),Toast.LENGTH_LONG).show();
-
                 return false;
             }
         });

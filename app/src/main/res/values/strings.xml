@@ -13,4 +13,5 @@
     <string name="tbPagarAlEntregar">Pagar al entregar</string>
     <string name="tbDebitarTarjeta">Debitar de tarjeta de credito</string>
     <string name="swNotificar">Notificar</string>
+    <string name="btnAddProduct">Buscar Menu</string>
 </resources>

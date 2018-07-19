@@ -21,7 +21,7 @@ import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
 
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnConfirmar;
+    private Button btnConfirmar,btnAddProducto;
     private EditText txtNombre;
     private EditText txtPedido;
     private Pedido pedidoActual;
@@ -54,6 +54,16 @@ public class MainActivity extends AppCompatActivity {
         rbResarvaMesa = findViewById(R.id.radBtnMesa);
         tgPago = findViewById(R.id.tbFormaPago);
 
+        btnAddProducto = (Button) findViewById(R.id.btnAddProducto);
+
+        btnAddProducto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent listaMenu= new
+                        Intent(MainActivity.this,DetallePedidoActivity.class);
+                startActivity(listaMenu);
+            }
+        });
         btnConfirmar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,16 +79,13 @@ public class MainActivity extends AppCompatActivity {
                     pedidoActual.setEnvioDomicilio(false);
                 }
                 Toast.makeText(MainActivity.this,"Pedido creado", Toast.LENGTH_LONG).show();
-                Log.d("APP_MY_RESTO","Pedido confirmado!!!! ");
-                Log.d("APP_MY_RESTO",pedidoActual.toString());
+
                 //Agregamos el pedido a pedidoDAO
 
                 pedidoDAO.agregar(pedidoActual);
                 Intent intentPedido = new Intent(MainActivity.this,ListaPedidosActivity.class);
                 intentPedido.putExtra("lista", (Parcelable) pedidoDAO);
                 startActivity(intentPedido);
-                //startActivityForResult(intentPedido,999);
-                Log.d("PEDIDODAO",pedidoDAO.listarTodos().toString());
                 //reset pedido Actual
                 // limpiar la variable para poder cargar un nuevo pedido
                 pedidoActual = new Pedido();
@@ -96,21 +103,11 @@ public class MainActivity extends AppCompatActivity {
                 rbResarvaMesa.setChecked(false);
                 //limpiar Toggle Button
                 tgPago.setChecked(false);
-
-
             }
 
         });
 
     }
 
-    /*protected void onActivityResult(int requestCode,int resultCode,Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
-        if(requestCode==999){
-            if(resultCode==RESULT_OK){
-
-            }
-        }
-    }*/
 
 }
