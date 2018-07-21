@@ -48,6 +48,11 @@
         android:lines="5"
         android:singleLine="false" />
 
+    <TextView
+        android:id="@+id/txtTotalPedido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <RadioGroup
         android:id="@+id/rgTipoPedido"
         android:layout_width="match_parent"

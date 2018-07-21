@@ -7,6 +7,11 @@ public class DetallePedido {
     private int id;
     private ProductoMenu productoPedido;
     private int cantidad;
+    private int idGenerator = 0;
+
+    public DetallePedido(){
+        this.id=idGenerator++;
+    }
 
     public DetallePedido(int id, ProductoMenu productoPedido, int cantidad) {
         this.id = id;

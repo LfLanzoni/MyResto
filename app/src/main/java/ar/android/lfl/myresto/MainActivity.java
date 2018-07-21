@@ -11,19 +11,23 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Switch;
 import android.widget.ToggleButton;
 
+import ar.android.lfl.myresto.modelo.DetallePedido;
 import ar.android.lfl.myresto.modelo.Pedido;
 import ar.android.lfl.myresto.modelo.PedidoDAO;
 import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
+import ar.android.lfl.myresto.modelo.ProductoMenu;
 
 
 public class MainActivity extends AppCompatActivity {
     private Button btnConfirmar,btnAddProducto;
     private EditText txtNombre;
     private EditText txtPedido;
+    private TextView txtTotalPedido;
     private Pedido pedidoActual;
     private CheckBox cbPropina;
     private CheckBox cbCancelar;
@@ -34,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton rbResarvaMesa;
     private ToggleButton tgPago;
     private PedidoDAO pedidoDAO;
-
+    public Double total=0.0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,15 +57,13 @@ public class MainActivity extends AppCompatActivity {
         rbDelibery = findViewById(R.id.radBtnDelibery);
         rbResarvaMesa = findViewById(R.id.radBtnMesa);
         tgPago = findViewById(R.id.tbFormaPago);
-
         btnAddProducto = (Button) findViewById(R.id.btnAddProducto);
-
+        txtTotalPedido = findViewById(R.id.txtTotalPedido);
         btnAddProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent listaMenu= new
-                        Intent(MainActivity.this,DetallePedidoActivity.class);
-                startActivity(listaMenu);
+                Intent listaMenu= new Intent(MainActivity.this,DetallePedidoActivity.class);
+                startActivityForResult(listaMenu,999);
             }
         });
         btnConfirmar.setOnClickListener(new View.OnClickListener() {
@@ -80,34 +82,48 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Toast.makeText(MainActivity.this,"Pedido creado", Toast.LENGTH_LONG).show();
 
-                //Agregamos el pedido a pedidoDAO
-
                 pedidoDAO.agregar(pedidoActual);
                 Intent intentPedido = new Intent(MainActivity.this,ListaPedidosActivity.class);
                 intentPedido.putExtra("lista", (Parcelable) pedidoDAO);
                 startActivity(intentPedido);
                 //reset pedido Actual
-                // limpiar la variable para poder cargar un nuevo pedido
                 pedidoActual = new Pedido();
-                // limpiar el edit text en la pantalla
+                // limpiar  pantalla
                 txtNombre.setText("");
                 txtPedido.setText("");
-                //limpiar Checkbox
                 cbBebidaXL.setChecked(false);
                 cbCancelar.setChecked(false);
                 cbPropina.setChecked(false);
-                //limpiar Switch
                 swtNotificacion.setChecked(false);
-                //limpiar Radio Buttons
                 rbDelibery.setChecked(false);
                 rbResarvaMesa.setChecked(false);
-                //limpiar Toggle Button
                 tgPago.setChecked(false);
+                txtTotalPedido.setText("$ 0");
             }
 
         });
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            if(requestCode==999){
+
+                int cantidad = data.getIntExtra("cantidad",0);
+                ProductoMenu prod= (ProductoMenu)
+                        data.getParcelableExtra("producto");
+                DetallePedido detalle = new DetallePedido();
+                detalle.setCantidad(cantidad);
+                detalle.setProductoPedido(prod);
+                pedidoActual.addItemDetalle(detalle);
+                txtPedido.getText().append(prod.getNombre()+ " $"+ (prod.getPrecio()*cantidad)+"\r\n");
+                total = total+(prod.getPrecio()*cantidad);
+                txtTotalPedido.setText("Total $"+total.toString());
+            }
+        }
+    }
 
 }
