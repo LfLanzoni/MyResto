@@ -3,6 +3,7 @@ package ar.android.lfl.myresto.modelo;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +55,26 @@ public class PedidoDAOMemory implements PedidoDAO, Parcelable {
         REPOSITORIO_PEDIDOS.remove(pedido);
     }
 
+    @Override
+    public Pedido buscarPorId(Integer id) {
+        for(Pedido unPedido: REPOSITORIO_PEDIDOS){
+            if(unPedido.getId().equals(id)) return unPedido;
+        }
+        return null;
+    }
+
+    @Override
+    public void actualizar(Pedido p){
+        Boolean flag=false;
+        flag = null!=(this.buscarPorId(p.getId()));
+        if(flag){
+            int index=REPOSITORIO_PEDIDOS.indexOf(p);
+            REPOSITORIO_PEDIDOS.set(index,p);
+        }else{
+            agregar(p);
+        }
+
+    }
 
 }
+

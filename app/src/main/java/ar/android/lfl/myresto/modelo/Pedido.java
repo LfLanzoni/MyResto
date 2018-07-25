@@ -6,17 +6,11 @@ import java.util.Objects;
 
 public class Pedido {
     private Integer id;
-    private String nombre;
-    private String pedido;
-    private Boolean envioDomicilio;
-    private Boolean bebidaXL;
-    private Boolean permiteCancelar;
-    private Boolean incluyePropina;
-    private Boolean enviarNotificaciones;
-    private Boolean pagoAutomatico;
-    private List<ProductoMenu> itemPedidos;
+    private String nombre,pedido;
+    private Boolean envioDomicilio,bebidaXL,permiteCancelar,incluyePropina,enviarNotificaciones,pagoAutomatico;
+    private List<DetallePedido> itemPedidos;
     private static int idGenerator = 0;
-
+    private Estado estado;
 
     public Pedido(){
         this.id = ++Pedido.idGenerator;
@@ -28,16 +22,16 @@ public class Pedido {
         return nombre;
     }
 
-    public List<ProductoMenu> getItemPedidos() {
+    public List<DetallePedido> getItemPedidos() {
         return itemPedidos;
     }
 
-    public void setItemPedidos(List<ProductoMenu> itemPedidos) {
+    public void setItemPedidos(List<DetallePedido> itemPedidos) {
         this.itemPedidos = itemPedidos;
     }
 
     public void addItemDetalle(DetallePedido prd){
-        this.itemPedidos.add(prd.getProductoPedido());
+        this.itemPedidos.add(prd);
     }
 
     public Integer getId() {
@@ -112,6 +106,14 @@ public class Pedido {
         this.pagoAutomatico = pagoAutomatico;
     }
 
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
     @Override
     public boolean equals (Object o){
         if(this == o) return true;
@@ -125,6 +127,24 @@ public class Pedido {
         return Objects.hash(id);
     }
 
+    public Boolean isIncluyePropina(){
+        return this.getIncluyePropina();
+    }
 
+    public Boolean isBebidaXL(){
+        return this.getBebidaXL();
+    }
+
+    public Boolean isEnviarNotificaciones(){
+        return  this.getEnviarNotificaciones();
+    }
+
+    public Boolean isEnvioDomicilio(){
+        return this.getEnvioDomicilio();
+    }
+
+    public Boolean isPagoAutomatico(){
+        return this.getPagoAutomatico();
+    }
 
 }

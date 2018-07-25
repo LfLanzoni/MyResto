@@ -17,6 +17,7 @@ import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import ar.android.lfl.myresto.modelo.DetallePedido;
+import ar.android.lfl.myresto.modelo.Estado;
 import ar.android.lfl.myresto.modelo.Pedido;
 import ar.android.lfl.myresto.modelo.PedidoDAO;
 import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnConfirmar,btnAddProducto;
     private EditText txtNombre;
     private EditText txtPedido;
-    private TextView txtTotalPedido;
+    private TextView tvTotalPedido;
     private Pedido pedidoActual;
     private CheckBox cbPropina;
     private CheckBox cbCancelar;
@@ -38,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton rbResarvaMesa;
     private ToggleButton tgPago;
     private PedidoDAO pedidoDAO;
-    public Double total=0.0;
+    public Double total=0.00;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,18 @@ public class MainActivity extends AppCompatActivity {
         rbResarvaMesa = findViewById(R.id.radBtnMesa);
         tgPago = findViewById(R.id.tbFormaPago);
         btnAddProducto = (Button) findViewById(R.id.btnAddProducto);
-        txtTotalPedido = findViewById(R.id.txtTotalPedido);
+        tvTotalPedido = findViewById(R.id.txtTotalPedido);
+        tvTotalPedido.setText("$ "+total.toString());
+
+
+        if(getIntent().getExtras()!=null){
+            int idPedidoSeleccionado = getIntent().getExtras().getInt("idPedido",-1);
+            if(idPedidoSeleccionado>0){
+                this.loadPedido(idPedidoSeleccionado);
+            }
+        }
+
+        //LOGICA BOTON MENU
         btnAddProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,26 +79,32 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(listaMenu,999);
             }
         });
+
+
+        //LOGICA BOTON CONFIRMAR
         btnConfirmar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pedidoActual.setEstado(Estado.CONFIRMADO);
                 pedidoActual.setNombre(txtNombre.getText().toString());
                 pedidoActual.setBebidaXL(cbBebidaXL.isChecked());
                 pedidoActual.setIncluyePropina(cbPropina.isChecked());
                 pedidoActual.setPermiteCancelar(cbCancelar.isChecked());
                 pedidoActual.setEnviarNotificaciones(swtNotificacion.isChecked());
                 pedidoActual.setPagoAutomatico(tgPago.isChecked());
-                if (rgTipoPedido.getCheckedRadioButtonId() == rbDelibery.getId()){
-                    pedidoActual.setEnvioDomicilio(true);
-                }else{
-                    pedidoActual.setEnvioDomicilio(false);
-                }
+                pedidoActual.setEnvioDomicilio(rgTipoPedido.getCheckedRadioButtonId()==R.id.radBtnDelibery);
+
                 Toast.makeText(MainActivity.this,"Pedido creado", Toast.LENGTH_LONG).show();
 
-                pedidoDAO.agregar(pedidoActual);
+                //Actualiza el repositorio
+                //si no esta lo crea y sino lo modifica
+
+                pedidoDAO.actualizar(pedidoActual);
+
                 Intent intentPedido = new Intent(MainActivity.this,ListaPedidosActivity.class);
                 intentPedido.putExtra("lista", (Parcelable) pedidoDAO);
                 startActivity(intentPedido);
+
                 //reset pedido Actual
                 pedidoActual = new Pedido();
                 // limpiar  pantalla
@@ -98,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
                 rbDelibery.setChecked(false);
                 rbResarvaMesa.setChecked(false);
                 tgPago.setChecked(false);
-                txtTotalPedido.setText("$ 0");
+                total =0.00;
+                tvTotalPedido.setText("$ "+total.toString());
+
             }
 
         });
@@ -121,9 +142,36 @@ public class MainActivity extends AppCompatActivity {
                 pedidoActual.addItemDetalle(detalle);
                 txtPedido.getText().append(prod.getNombre()+ " $"+ (prod.getPrecio()*cantidad)+"\r\n");
                 total = total+(prod.getPrecio()*cantidad);
-                txtTotalPedido.setText("Total $"+total.toString());
+                tvTotalPedido.setText("Total $"+total.toString());
             }
         }
     }
+    private void loadPedido(int id){
+        pedidoActual= this.pedidoDAO.buscarPorId(id);
+        txtNombre.setText(pedidoActual.getNombre());
+        cbBebidaXL.setChecked(pedidoActual.isBebidaXL());
+        cbPropina.setChecked(pedidoActual.isIncluyePropina());
+        swtNotificacion.setChecked(pedidoActual.isEnviarNotificaciones());
+        RadioButton rbDelivery = (RadioButton) findViewById(R.id.radBtnDelibery);
+        RadioButton rbMesa = (RadioButton) findViewById(R.id.radBtnMesa);
+        if(pedidoActual.isEnvioDomicilio()){
+            rbDelivery.setChecked(true);
+            rbMesa.setChecked(false);
+        }else{
+            rbDelivery.setChecked(false);
+            rbMesa.setChecked(true);
+        }
+        tgPago.setChecked(!pedidoActual.isPagoAutomatico());
+        double totalOrden = 0.0;
+        for(DetallePedido det : pedidoActual.getItemPedidos()){
+            txtPedido.getText().append(det.getProductoPedido().getNombre()+
+                    " $"+(det.getProductoPedido().getPrecio()*det.getCantidad())+"\r\n");
+            totalOrden += det.getCantidad()*det.getProductoPedido().getPrecio();
+        }
+        total=totalOrden;
+        tvTotalPedido.setText("$"+totalOrden);
+    }
+
+
 
 }

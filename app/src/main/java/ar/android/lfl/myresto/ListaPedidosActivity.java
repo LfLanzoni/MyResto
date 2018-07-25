@@ -18,7 +18,7 @@ import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
 
 public class ListaPedidosActivity extends AppCompatActivity {
     PedidoDAO pedidoDAO;
-    ArrayAdapter<Pedido> adaptadorPedido;
+    PedidoAdapter adaptadorPedido;
     Button btnNuevoPedido;
     ListView listaPedidos;
     @Override
@@ -30,7 +30,8 @@ public class ListaPedidosActivity extends AppCompatActivity {
         final Intent intentPedido = getIntent();
         pedidoDAO = new PedidoDAOMemory();
         pedidoDAO=intentPedido.getParcelableExtra("lista");
-        this.adaptadorPedido = new ArrayAdapter<>(ListaPedidosActivity.this,android.R.layout.simple_list_item_1,pedidoDAO.listarTodos());
+        Log.d("listaPedido",pedidoDAO.listarTodos().toString());
+        this.adaptadorPedido = new PedidoAdapter(this,pedidoDAO.listarTodos());
         this.listaPedidos.setAdapter(this.adaptadorPedido);
         this.btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,7 +42,7 @@ public class ListaPedidosActivity extends AppCompatActivity {
 
         this.listaPedidos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> adapterView,View view,int position,long id) {
                 int itemPosition = position;
                 Pedido itemValue = (Pedido) listaPedidos.getItemAtPosition(position);
                 pedidoDAO.eliminar(itemValue);
