@@ -147,4 +147,19 @@ public class Pedido {
         return this.getPagoAutomatico();
     }
 
+    public void preparar(){
+        if(this.estado==Estado.CONFIRMADO){
+            this.estado = Estado.EN_PREPARACION;
+        }
+    }
+    public void enviar(){
+        if(this.estado==Estado.EN_PREPARACION){
+            this.estado = Estado.EN_ENVIO;
+        }
+    }
+    public void entregar(){
+        if(this.estado==Estado.EN_ENVIO){
+            this.estado = Estado.ENTREGADO;
+        }
+    }
 }

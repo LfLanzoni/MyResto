@@ -43,7 +43,8 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         TextView tvMonto = (TextView) fila.findViewById(R.id.filaPedidoMonto);
         TextView tvEstado = (TextView) fila.findViewById(R.id.filaPedidoEstado);
         ImageView imgPropina = (ImageView) fila.findViewById(R.id.filaPedidoImgPropina);
-        Button btnVer = (Button) fila.findViewById(R.id.btnVerPedido);
+        Button btnVer = (Button) fila.findViewById(R.id.filaPedidoBtnVerPedido);
+        Button btnEstado = (Button) fila.findViewById(R.id.filaPedidoBtnCambiarEstado);
         tvNombre.setText("Cliente : "+pedido.getNombre());
         tvCantItems.setText("Items: "+pedido.getItemPedidos().size());
         tvMonto.setText("$"+monto);
@@ -53,6 +54,25 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         }else{
             imgPropina.setImageResource(android.R.drawable.btn_star_big_off);
         }
+        switch (pedido.getEstado()){
+            case CONFIRMADO:
+                btnEstado.setText("Preparar");
+                btnEstado.setEnabled(true);
+                break;
+            case EN_PREPARACION:
+                btnEstado.setText("Preparando....");
+                btnEstado.setEnabled(false);
+                break;
+            case EN_ENVIO:
+                btnEstado.setText("Entregar");
+                btnEstado.setEnabled(true);
+                break;
+            default:
+                btnEstado.setText("Finalizado");
+                btnEstado.setEnabled(false);
+                break;
+        }
+
         btnVer.setTag(pedido);
         btnVer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +83,22 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
                 // intentDetalle tiene que pedir que se muestre MainActivity
                 // y pone como extra el idPedido del pedido del botón actual
                 context.startActivity(intentDetalle);
+            }
+        });
+
+        btnEstado.setTag(pedido);
+        btnEstado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Pedido p = (Pedido) v.getTag();
+                switch (p.getEstado()){
+                    case CONFIRMADO:
+                        p.preparar();
+                        break;
+                    case EN_ENVIO:
+                        p.entregar();
+                        break;
+                }
             }
         });
         return fila;
