@@ -1,6 +1,9 @@
 package ar.android.lfl.myresto;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,18 +24,21 @@ public class ListaPedidosActivity extends AppCompatActivity {
     PedidoAdapter adaptadorPedido;
     Button btnNuevoPedido;
     ListView listaPedidos;
+    String CHANNEL_ID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_pedidos);
+        this.createNotificationChannel();
         btnNuevoPedido = (Button) findViewById(R.id.btnNuevosPedidos);
-        listaPedidos =(ListView) findViewById(R.id.listaPedidos);
+        listaPedidos = (ListView) findViewById(R.id.listaPedidos);
         final Intent intentPedido = getIntent();
         pedidoDAO = new PedidoDAOMemory();
-        pedidoDAO=intentPedido.getParcelableExtra("lista");
-        Log.d("listaPedido",pedidoDAO.listarTodos().toString());
-        this.adaptadorPedido = new PedidoAdapter(this,pedidoDAO.listarTodos());
+        pedidoDAO = intentPedido.getParcelableExtra("lista");
+        //Log.d("listaPedido", pedidoDAO.listarTodos().toString());
+        this.adaptadorPedido = new PedidoAdapter(this, pedidoDAO.listarTodos());
         this.listaPedidos.setAdapter(this.adaptadorPedido);
+        //LOGICA BOTON NUEVO PEDIDO
         this.btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,20 +46,33 @@ public class ListaPedidosActivity extends AppCompatActivity {
             }
         });
 
+        //LOGICA BORRAR
         this.listaPedidos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView,View view,int position,long id) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 int itemPosition = position;
                 Pedido itemValue = (Pedido) listaPedidos.getItemAtPosition(position);
                 pedidoDAO.eliminar(itemValue);
                 adaptadorPedido.notifyDataSetChanged();
-                Toast.makeText(getApplicationContext(),"Borrar elemento de posicion :"+itemPosition+
-                "  id: "+itemValue.getId()+" nombre: "+itemValue.getNombre(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Borrar elemento de posicion :" + itemPosition +
+                        "  id: " + itemValue.getId() + " nombre: " + itemValue.getNombre(), Toast.LENGTH_LONG).show();
                 return false;
             }
         });
-
     }
 
+    //CANAL DE NOTIFICACIONES
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "canal1",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("descripcion");
+            NotificationManager notificationManager
+                    = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
 
+    }
 }

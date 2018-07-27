@@ -1,9 +1,14 @@
 package ar.android.lfl.myresto;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Random;
 
 import ar.android.lfl.myresto.modelo.DetallePedido;
 import ar.android.lfl.myresto.modelo.Pedido;
@@ -33,7 +39,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         if(fila==null) {
             fila =  LayoutInflater.from(this.context).inflate(R.layout.fila_pedido, parent, false);
         }
-        Pedido pedido = this.listaPedidos.get(position);
+        final Pedido pedido = this.listaPedidos.get(position);
         double monto = 0.0;
         for(DetallePedido det : pedido.getItemPedidos()){
             monto += det.getCantidad()*det.getProductoPedido().getPrecio() ;
@@ -72,7 +78,6 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
                 btnEstado.setEnabled(false);
                 break;
         }
-
         btnVer.setTag(pedido);
         btnVer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +99,26 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
                 switch (p.getEstado()){
                     case CONFIRMADO:
                         p.preparar();
+                        ((Button)v).setText("Preparando....");
+                        ((Button)v).setEnabled(false);
+                        Runnable r = new Runnable() {
+                            @Override
+                            public void run() {
+                                Random r = new Random();
+                                int segundos = 5+r.nextInt(11);
+                                try {
+                                    Thread.currentThread().sleep(1000*segundos);
+                                    pedido.enviar();
+                                    //__INVOCAR METODO NOTIFICAR que realizará en el PASO 3
+                                    notificarEnvio(pedido.getNombre());
+                                }
+                                catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        Thread t =new Thread(r);
+                        t.start();
                         break;
                     case EN_ENVIO:
                         p.entregar();
@@ -102,6 +127,22 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
             }
         });
         return fila;
+    }
+
+    public void notificarEnvio(String destinatario){
+        Intent intent = new Intent(this.context,ListaPedidosActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this.context,0,intent,0);
+        Log.d("APP_MY_RESTO","Creando notificacion");
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.context,"1")
+                .setSmallIcon(android.R.drawable.ic_menu_agenda)
+                .setContentTitle("Pedido Entregado")
+                .setContentText("El pedido para "+destinatario+" ha sido entregado")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.context);
+        notificationManager.notify(100,mBuilder.build());
     }
 
 }
