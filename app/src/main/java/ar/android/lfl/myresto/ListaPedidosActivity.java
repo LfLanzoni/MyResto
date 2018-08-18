@@ -25,6 +25,7 @@ public class ListaPedidosActivity extends AppCompatActivity {
     Button btnNuevoPedido;
     ListView listaPedidos;
     String CHANNEL_ID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,17 +33,21 @@ public class ListaPedidosActivity extends AppCompatActivity {
         this.createNotificationChannel();
         btnNuevoPedido = (Button) findViewById(R.id.btnNuevosPedidos);
         listaPedidos = (ListView) findViewById(R.id.listaPedidos);
-        final Intent intentPedido = getIntent();
+        //final Intent intentPedido = getIntent();
         pedidoDAO = new PedidoDAOMemory();
-        pedidoDAO = intentPedido.getParcelableExtra("lista");
-        //Log.d("listaPedido", pedidoDAO.listarTodos().toString());
+        //pedidoDAO = intentPedido.getParcelableExtra("lista");
+        Log.d("listaPedido", pedidoDAO.listarTodos().toString());
         this.adaptadorPedido = new PedidoAdapter(this, pedidoDAO.listarTodos());
         this.listaPedidos.setAdapter(this.adaptadorPedido);
+
         //LOGICA BOTON NUEVO PEDIDO
         this.btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                //finish();
+                Intent intent = new Intent(ListaPedidosActivity.this,MainActivity.class);
+                intent.putExtra("lista", (Parcelable) pedidoDAO);
+                startActivity(intent);
             }
         });
 
@@ -59,6 +64,7 @@ public class ListaPedidosActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 
     //CANAL DE NOTIFICACIONES
