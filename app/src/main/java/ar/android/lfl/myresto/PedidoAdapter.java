@@ -55,7 +55,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         Button btnVer = (Button) fila.findViewById(R.id.filaPedidoBtnVerPedido);
         Button btnEstado = (Button) fila.findViewById(R.id.filaPedidoBtnCambiarEstado);
         tvNombre.setText("Cliente : "+pedido.getNombre());
-        tvCantItems.setText("Items: "+pedido.getItemPedidos().size());
+        tvCantItems.setText("Items: "+String.valueOf(pedido.getItemPedidos().size()));
         tvMonto.setText("$"+monto);
         tvEstado.setText(pedido.getEstado().toString());
         if(pedido.isIncluyePropina()){
@@ -134,12 +134,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
 
     public void notificarEnvio(String destinatario){
         Intent intent = new Intent(this.context,ListaPedidosActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        //PedidoDAO pedidoDAO = new PedidoDAOMemory();
-        ////   ) {
-            //pedidoDAO.agregar(p);
-       // };
-        //intent.putExtra("lista", (Parcelable) pedidoDAO);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         PendingIntent pendingIntent= PendingIntent.getActivity(this.context,0,intent,0);
         Log.d("APP_MY_RESTO","Creando notificacion");
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.context,"1")

@@ -21,6 +21,7 @@ import ar.android.lfl.myresto.modelo.Estado;
 import ar.android.lfl.myresto.modelo.Pedido;
 import ar.android.lfl.myresto.modelo.PedidoDAO;
 import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
+import ar.android.lfl.myresto.modelo.PedidoDaoJson;
 import ar.android.lfl.myresto.modelo.ProductoMenu;
 
 
@@ -46,8 +47,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pedidoActual = new Pedido();
-        pedidoDAO= new PedidoDAOMemory();
+
+        pedidoDAO= new PedidoDaoJson(this);
+        if (pedidoDAO.listarTodos().size()==0) {
+            pedidoActual = new Pedido();
+        }else{
+            pedidoActual= new Pedido(pedidoDAO.listarTodos().size());
+        }
+
         txtNombre = findViewById(R.id.txtNombreCliente);
         txtPedido = findViewById(R.id.txtDetallePedido);
         btnConfirmar = findViewById(R.id.btnConfirmar);
@@ -93,16 +100,12 @@ public class MainActivity extends AppCompatActivity {
                 pedidoActual.setEnviarNotificaciones(swtNotificacion.isChecked());
                 pedidoActual.setPagoAutomatico(tgPago.isChecked());
                 pedidoActual.setEnvioDomicilio(rgTipoPedido.getCheckedRadioButtonId()==R.id.radBtnDelibery);
-
                 Toast.makeText(MainActivity.this,"Pedido creado", Toast.LENGTH_LONG).show();
 
-                //Actualiza el repositorio
-                //si no esta lo crea y sino lo modifica
-
-                pedidoDAO.actualizar(pedidoActual);
+                pedidoDAO.agregar(pedidoActual);
 
                 Intent intentPedido = new Intent(MainActivity.this,ListaPedidosActivity.class);
-                intentPedido.putExtra("lista", (Parcelable) pedidoDAO);
+                //intentPedido.putExtra("lista", (Parcelable) pedidoDAO);
                 startActivity(intentPedido);
 
                 //reset pedido Actual
@@ -132,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
             if(requestCode==999){
-
                 int cantidad = data.getIntExtra("cantidad",0);
                 ProductoMenu prod= (ProductoMenu)
                         data.getParcelableExtra("producto");

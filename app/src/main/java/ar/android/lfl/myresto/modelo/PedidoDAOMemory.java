@@ -70,8 +70,6 @@ public class PedidoDAOMemory implements PedidoDAO, Parcelable {
         if(flag){
             int index=REPOSITORIO_PEDIDOS.indexOf(p);
             REPOSITORIO_PEDIDOS.set(index,p);
-        }else{
-            agregar(p);
         }
 
     }

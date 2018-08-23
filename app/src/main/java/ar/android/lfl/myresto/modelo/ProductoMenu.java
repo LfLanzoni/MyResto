@@ -48,7 +48,7 @@ public class ProductoMenu implements Parcelable {
     @Override
     public String toString() {
         return nombre+"-"+precio;
-    }
+   }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -77,3 +77,4 @@ public class ProductoMenu implements Parcelable {
                 }
             };
 }
+

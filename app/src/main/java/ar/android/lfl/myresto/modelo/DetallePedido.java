@@ -7,7 +7,7 @@ public class DetallePedido {
     private int id;
     private ProductoMenu productoPedido;
     private int cantidad;
-    private int idGenerator = 0;
+    private int idGenerator = 1;
 
     public DetallePedido(){
         this.id=idGenerator++;
@@ -41,5 +41,9 @@ public class DetallePedido {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public String toString(){
+        return "id: "+this.id+" producto: "+this.productoPedido.toString()+" cantidad: "+this.cantidad;
     }
 }

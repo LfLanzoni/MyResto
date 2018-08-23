@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import ar.android.lfl.myresto.modelo.PedidoDaoJson;
 import ar.android.lfl.myresto.modelo.ProductoDAO;
 import ar.android.lfl.myresto.modelo.ProductoDAOMemory;
 import ar.android.lfl.myresto.modelo.ProductoMenu;
@@ -78,6 +79,7 @@ public class DetallePedidoActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent();
+
                     intent.putExtra("producto", productoElegido);
                     intent.putExtra("cantidad", cantidadProducto);
                     setResult(RESULT_OK, intent);

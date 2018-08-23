@@ -1,5 +1,15 @@
 package ar.android.lfl.myresto.modelo;
 
+import android.util.Log;
+
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +24,10 @@ public class Pedido {
 
     public Pedido(){
         this.id = ++Pedido.idGenerator;
+        this.itemPedidos = new ArrayList<>();
+    }
+    public Pedido(Integer nuevoId){
+        this.id = nuevoId+2;
         this.itemPedidos = new ArrayList<>();
     }
 
@@ -161,5 +175,76 @@ public class Pedido {
         if(this.estado==Estado.EN_ENVIO){
             this.estado = Estado.ENTREGADO;
         }
+    }
+
+    public void loadFromJson(JSONObject fila ){
+        try {
+            this.setBebidaXL(fila.getBoolean("bebidaXL"));
+            this.setId(fila.getInt("id"));
+            this.setPagoAutomatico(fila.getBoolean("pagoAutomatico"));
+            this.setEnviarNotificaciones(fila.getBoolean("enviarNotificaciones"));
+            this.setEnvioDomicilio(fila.getBoolean("envioDomicilio"));
+            this.setIncluyePropina(fila.getBoolean("incluyePropina"));
+            this.setPermiteCancelar(fila.getBoolean("permiteCancelar"));
+            this.setNombre(fila.getString("nombre"));
+            this.setEstado(Estado.valueOf(fila.getString("estado")));
+            if(fila.getJSONArray("detalle").length()>0){
+                this.setItemPedidos(new ArrayList<DetallePedido>());
+                JSONArray detallePedido = fila.getJSONArray("detalle");
+                for(int j =0;j<detallePedido.length();j++){
+                    DetallePedido detalleAux = new DetallePedido();
+                    JSONObject filaDetalle = detallePedido.getJSONObject(j);
+                    detalleAux.setCantidad(filaDetalle.getInt("cantidad"));
+                    Log.d("LOAD CANTIDAD",String.valueOf(filaDetalle.getInt("cantidad")));
+                    detalleAux.setId(filaDetalle.getInt("id"));
+                    JSONObject elProducto = filaDetalle.getJSONObject("producto");
+                    ProductoMenu prd = new ProductoMenu();
+                    prd.setId(elProducto.getInt("id"));
+                    prd.setNombre(elProducto.getString("nombre"));
+                    prd.setPrecio(elProducto.getDouble("precio"));
+                    detalleAux.setProductoPedido(prd);
+                    this.addItemDetalle(detalleAux);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public JSONObject toJson()  throws JSONException {
+        JSONObject jsonPedido= new JSONObject();
+        JSONObject jsonDetalle = new JSONObject();
+        JSONArray jsonDetalleArray = new JSONArray();
+        JSONObject jsonProducto = new JSONObject();
+        try {
+            jsonPedido.put("id", this.getId());
+            jsonPedido.put("nombre",this.getNombre());
+            jsonPedido.put("bebidaXL",this.getBebidaXL());
+            jsonPedido.put("enviarNotificaciones",this.getEnviarNotificaciones());
+            jsonPedido.put("envioDomicilio",this.getEnvioDomicilio());
+            jsonPedido.put("incluyePropina",this.getIncluyePropina());
+            jsonPedido.put("estado",this.getEstado());
+            jsonPedido.put("pagoAutomatico",this.getPagoAutomatico());
+            jsonPedido.put("permiteCancelar",this.getPermiteCancelar());
+
+            for (DetallePedido dp:this.getItemPedidos()) {
+                jsonDetalle.put("id",dp.getId());
+                jsonDetalle.put("cantidad",dp.getCantidad());
+                Log.d("CARGE CANTIDAD", (String.valueOf(dp.getCantidad())));
+                jsonProducto.put("id",dp.getProductoPedido().getId());
+                jsonProducto.put("nombre",dp.getProductoPedido().getNombre());
+                jsonProducto.put("precio",dp.getProductoPedido().getPrecio());
+                Log.d("CARGE PRECIO", (String.valueOf(dp.getProductoPedido().getPrecio())));
+
+                jsonDetalle.put("producto",jsonProducto);
+
+                jsonDetalleArray.put(jsonDetalle);
+            }
+            jsonPedido.put("detalle",jsonDetalleArray);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        return jsonPedido;
     }
 }

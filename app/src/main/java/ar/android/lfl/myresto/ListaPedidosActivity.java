@@ -18,6 +18,7 @@ import android.widget.Toast;
 import ar.android.lfl.myresto.modelo.Pedido;
 import ar.android.lfl.myresto.modelo.PedidoDAO;
 import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
+import ar.android.lfl.myresto.modelo.PedidoDaoJson;
 
 public class ListaPedidosActivity extends AppCompatActivity {
     PedidoDAO pedidoDAO;
@@ -33,22 +34,17 @@ public class ListaPedidosActivity extends AppCompatActivity {
         this.createNotificationChannel();
         btnNuevoPedido = (Button) findViewById(R.id.btnNuevosPedidos);
         listaPedidos = (ListView) findViewById(R.id.listaPedidos);
-        //final Intent intentPedido = getIntent();
-        pedidoDAO = new PedidoDAOMemory();
-        //pedidoDAO = intentPedido.getParcelableExtra("lista");
-        Log.d("listaPedido", pedidoDAO.listarTodos().toString());
+        pedidoDAO = new PedidoDaoJson(this);
         this.adaptadorPedido = new PedidoAdapter(this, pedidoDAO.listarTodos());
         this.listaPedidos.setAdapter(this.adaptadorPedido);
 
+
         //LOGICA BOTON NUEVO PEDIDO
         this.btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
-            @Override
+             @Override
             public void onClick(View view) {
-                //finish();
-                Intent intent = new Intent(ListaPedidosActivity.this,MainActivity.class);
-                intent.putExtra("lista", (Parcelable) pedidoDAO);
-                startActivity(intent);
-            }
+                finish();
+             }
         });
 
         //LOGICA BORRAR
@@ -78,6 +74,7 @@ public class ListaPedidosActivity extends AppCompatActivity {
             NotificationManager notificationManager
                     = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+
         }
 
     }
