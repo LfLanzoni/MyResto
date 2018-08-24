@@ -1,13 +1,12 @@
 package ar.android.lfl.myresto.modelo;
 
-import android.util.Log;
+
 
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 
 import java.util.ArrayList;
@@ -195,7 +194,6 @@ public class Pedido {
                     DetallePedido detalleAux = new DetallePedido();
                     JSONObject filaDetalle = detallePedido.getJSONObject(j);
                     detalleAux.setCantidad(filaDetalle.getInt("cantidad"));
-                    Log.d("LOAD CANTIDAD",String.valueOf(filaDetalle.getInt("cantidad")));
                     detalleAux.setId(filaDetalle.getInt("id"));
                     JSONObject elProducto = filaDetalle.getJSONObject("producto");
                     ProductoMenu prd = new ProductoMenu();
@@ -231,14 +229,10 @@ public class Pedido {
             for (DetallePedido dp:this.getItemPedidos()) {
                 jsonDetalle.put("id",dp.getId());
                 jsonDetalle.put("cantidad",dp.getCantidad());
-                Log.d("CARGE CANTIDAD", (String.valueOf(dp.getCantidad())));
                 jsonProducto.put("id",dp.getProductoPedido().getId());
                 jsonProducto.put("nombre",dp.getProductoPedido().getNombre());
                 jsonProducto.put("precio",dp.getProductoPedido().getPrecio());
-                Log.d("CARGE PRECIO", (String.valueOf(dp.getProductoPedido().getPrecio())));
-
                 jsonDetalle.put("producto",jsonProducto);
-
                 jsonDetalleArray.put(jsonDetalle);
             }
             jsonPedido.put("detalle",jsonDetalleArray);

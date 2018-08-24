@@ -25,7 +25,6 @@ public class ProductoDAOMemory implements ProductoDAO {
             ProductoMenu aux = new ProductoMenu();
             aux.setId(Integer.valueOf(tokens.nextToken()));
             aux.setNombre(tokens.nextToken());
-            Log.d("cargarDato",aux.getNombre());
             aux.setPrecio(Double.valueOf(tokens.nextToken()));
             MENU_PRODUCTOS.add(aux);
         }

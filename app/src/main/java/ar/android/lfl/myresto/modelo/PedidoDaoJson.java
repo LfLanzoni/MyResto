@@ -89,7 +89,6 @@ public class PedidoDaoJson implements PedidoDAO,Parcelable{
         FileOutputStream fos = null;
         try {
             fos = ctx.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            Log.d("ARCHIVOCREE",arregloPedidos.toString());
             fos.write(arregloPedidos.toString().getBytes());
             fos.close();
         } catch (FileNotFoundException e) {
@@ -144,13 +143,9 @@ public class PedidoDaoJson implements PedidoDAO,Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        ///dest.writeParcelable(this.ctx, flags);
-        //dest.writeString(this.FILENAME);
     }
 
     protected PedidoDaoJson(Parcel in) {
-        //this.ctx = in.readParcelable(Context.class.getClassLoader());
-      //  this.FILENAME = in.readString();
     }
 
     public static final Creator<PedidoDaoJson> CREATOR = new Creator<PedidoDaoJson>() {

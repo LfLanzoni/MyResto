@@ -98,7 +98,8 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         btnEstado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Pedido p = (Pedido) v.getTag();
+                final Pedido p = (Pedido) v.getTag();
+                final int index = listaPedidos.indexOf(p);
                 switch (p.getEstado()){
                     case CONFIRMADO:
                         p.preparar();
@@ -112,6 +113,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
                                 try {
                                     Thread.currentThread().sleep(1000*segundos);
                                     pedido.enviar();
+                                    listaPedidos.set(index,p);
                                     //__INVOCAR METODO NOTIFICAR que realizará en el PASO 3
                                     notificarEnvio(pedido.getNombre());
                                 }
@@ -125,6 +127,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
                         break;
                     case EN_ENVIO:
                         p.entregar();
+                        listaPedidos.set(index,p);
                         break;
                 }
             }

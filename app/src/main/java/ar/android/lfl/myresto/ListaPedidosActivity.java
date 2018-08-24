@@ -38,12 +38,12 @@ public class ListaPedidosActivity extends AppCompatActivity {
         this.adaptadorPedido = new PedidoAdapter(this, pedidoDAO.listarTodos());
         this.listaPedidos.setAdapter(this.adaptadorPedido);
 
-
         //LOGICA BOTON NUEVO PEDIDO
         this.btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
              @Override
             public void onClick(View view) {
-                finish();
+                 Intent intent = new Intent(ListaPedidosActivity.this,MainActivity.class);
+                 startActivity(intent);
              }
         });
 

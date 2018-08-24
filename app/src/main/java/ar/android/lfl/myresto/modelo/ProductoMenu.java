@@ -3,6 +3,9 @@ package ar.android.lfl.myresto.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ProductoMenu implements Parcelable {
     private int id;
     private String nombre;
@@ -76,5 +79,17 @@ public class ProductoMenu implements Parcelable {
                     return new ProductoMenu[size];
                 }
             };
+
+    public void loadFromJson(JSONObject fila) {
+        try {
+            this.setId(fila.getInt("id"));
+            this.setPrecio(fila.getDouble("precio"));
+            this.setNombre(fila.getString("nombre"));
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+    }
+
 }
+
 
