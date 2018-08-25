@@ -140,6 +140,8 @@ public class Pedido {
         return Objects.hash(id);
     }
 
+    public Boolean isPermiteCancelar() {return this.getPermiteCancelar();}
+
     public Boolean isIncluyePropina(){
         return this.getIncluyePropina();
     }

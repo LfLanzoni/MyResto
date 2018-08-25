@@ -18,6 +18,7 @@ import android.widget.Toast;
 import ar.android.lfl.myresto.modelo.Pedido;
 import ar.android.lfl.myresto.modelo.PedidoDAO;
 import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
+import ar.android.lfl.myresto.modelo.PedidoDAOsql;
 import ar.android.lfl.myresto.modelo.PedidoDaoJson;
 
 public class ListaPedidosActivity extends AppCompatActivity {
@@ -34,7 +35,8 @@ public class ListaPedidosActivity extends AppCompatActivity {
         this.createNotificationChannel();
         btnNuevoPedido = (Button) findViewById(R.id.btnNuevosPedidos);
         listaPedidos = (ListView) findViewById(R.id.listaPedidos);
-        pedidoDAO = new PedidoDaoJson(this);
+        //pedidoDAO = new PedidoDaoJson(this);
+        pedidoDAO = new PedidoDAOsql(this);
         this.adaptadorPedido = new PedidoAdapter(this, pedidoDAO.listarTodos());
         this.listaPedidos.setAdapter(this.adaptadorPedido);
 
@@ -53,10 +55,16 @@ public class ListaPedidosActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 int itemPosition = position;
                 Pedido itemValue = (Pedido) listaPedidos.getItemAtPosition(position);
-                pedidoDAO.eliminar(itemValue);
-                adaptadorPedido.notifyDataSetChanged();
+
+                //adaptadorPedido.refresh(pedidoDAO.listarTodos());
+                //adaptadorPedido.setListaPedidos(pedidoDAO.listarTodos());
+                //adaptadorPedido.clear();
+
                 Toast.makeText(getApplicationContext(), "Borrar elemento de posicion :" + itemPosition +
                         "  id: " + itemValue.getId() + " nombre: " + itemValue.getNombre(), Toast.LENGTH_LONG).show();
+                pedidoDAO.eliminar(itemValue);
+                adaptadorPedido.remove(itemValue);
+                adaptadorPedido.notifyDataSetChanged();
                 return false;
             }
         });
@@ -77,5 +85,13 @@ public class ListaPedidosActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //adaptadorPedido= new PedidoAdapter(getActivity(),pedidoDAO.listarTodos());
+        //adaptadorPedido.setListaPedidos(pedidoDAO.listarTodos());
+        adaptadorPedido.notifyDataSetChanged();
     }
 }

@@ -151,4 +151,12 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         notificationManager.notify(100,mBuilder.build());
     }
 
+    public void refresh(List<Pedido> listaNueva){
+        this.listaPedidos=listaNueva;
+        this.notifyDataSetChanged();
+    }
+
+    public void setListaPedidos(List<Pedido> listaNueva){
+        this.listaPedidos=listaNueva;
+    }
 }

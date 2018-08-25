@@ -17,6 +17,7 @@ import ar.android.lfl.myresto.modelo.PedidoDaoJson;
 import ar.android.lfl.myresto.modelo.ProductoDAO;
 import ar.android.lfl.myresto.modelo.ProductoDAOHttp;
 import ar.android.lfl.myresto.modelo.ProductoDAOMemory;
+import ar.android.lfl.myresto.modelo.ProductoDAOsql;
 import ar.android.lfl.myresto.modelo.ProductoMenu;
 
 public class DetallePedidoActivity extends AppCompatActivity {
@@ -39,11 +40,19 @@ public class DetallePedidoActivity extends AppCompatActivity {
         cantidadProducto=0;
         txtCantidad.setText(cantidadProducto.toString());
         //listaMenu.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        productoDao = new ProductoDAOHttp();
+        //productoDao = new ProductoDAOHttp();
+        productoDao = new ProductoDAOsql(this);
+        adaptadorLista = new ArrayAdapter<ProductoMenu>(DetallePedidoActivity.this,android.R.layout.simple_list_item_single_choice,productoDao.listarMenu());
+        listaMenu.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listaMenu.setAdapter(adaptadorLista);
+
         //String[] listaProductos =getResources().getStringArray(R.array.listaProductos);
         //productoDao.cargarDatos(listaProductos);
         //adaptadorLista = new ArrayAdapter<ProductoMenu>(DetallePedidoActivity.this,android.R.layout.simple_list_item_single_choice,productoDao.listarMenu());
         //listaMenu.setAdapter(adaptadorLista);
+
+        //LAB 15
+        /*
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -60,7 +69,7 @@ public class DetallePedidoActivity extends AppCompatActivity {
         Thread hiloBuscarDatos = new Thread(r);
         hiloBuscarDatos.start();
 
-
+        */
         listaMenu.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override

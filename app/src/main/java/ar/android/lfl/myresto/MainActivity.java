@@ -18,9 +18,11 @@ import android.widget.ToggleButton;
 
 import ar.android.lfl.myresto.modelo.DetallePedido;
 import ar.android.lfl.myresto.modelo.Estado;
+import ar.android.lfl.myresto.modelo.PedidoDAOsql;
 import ar.android.lfl.myresto.modelo.Pedido;
 import ar.android.lfl.myresto.modelo.PedidoDAO;
 import ar.android.lfl.myresto.modelo.PedidoDAOMemory;
+import ar.android.lfl.myresto.modelo.PedidoDAOsql;
 import ar.android.lfl.myresto.modelo.PedidoDaoJson;
 import ar.android.lfl.myresto.modelo.ProductoMenu;
 
@@ -48,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        pedidoDAO= new PedidoDaoJson(this);
-        if (pedidoDAO.listarTodos().size()==0) {
-            pedidoActual = new Pedido();
-        }else{
-            pedidoActual= new Pedido(pedidoDAO.listarTodos().size());
-        }
+        //pedidoDAO= new PedidoDaoJson(this);
+        pedidoDAO = new PedidoDAOsql(this);
+
+        if(pedidoDAO.listarTodos().size()>0){
+            pedidoActual=new Pedido();
+        }else{pedidoActual=new Pedido(pedidoDAO.listarTodos().size());}
 
         txtNombre = findViewById(R.id.txtNombreCliente);
         txtPedido = findViewById(R.id.txtDetallePedido);
@@ -92,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
         btnConfirmar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Boolean flagActulizar =false;
+                if(pedidoDAO.buscarPorId(pedidoActual.getId())!= null) {
+                    flagActulizar = true;
+                }
                 pedidoActual.setEstado(Estado.CONFIRMADO);
                 pedidoActual.setNombre(txtNombre.getText().toString());
                 pedidoActual.setBebidaXL(cbBebidaXL.isChecked());
@@ -102,7 +108,11 @@ public class MainActivity extends AppCompatActivity {
                 pedidoActual.setEnvioDomicilio(rgTipoPedido.getCheckedRadioButtonId()==R.id.radBtnDelibery);
                 Toast.makeText(MainActivity.this,"Pedido creado", Toast.LENGTH_LONG).show();
 
-                pedidoDAO.agregar(pedidoActual);
+                if(flagActulizar==true){
+                    pedidoDAO.actualizar(pedidoActual);
+                }else{
+                    pedidoDAO.agregar(pedidoActual);
+                }
 
                 Intent intentPedido = new Intent(MainActivity.this,ListaPedidosActivity.class);
                 //intentPedido.putExtra("lista", (Parcelable) pedidoDAO);
@@ -163,7 +173,8 @@ public class MainActivity extends AppCompatActivity {
             rbDelivery.setChecked(false);
             rbMesa.setChecked(true);
         }
-        tgPago.setChecked(!pedidoActual.isPagoAutomatico());
+
+        tgPago.setChecked(pedidoActual.isPagoAutomatico());
         double totalOrden = 0.0;
         for(DetallePedido det : pedidoActual.getItemPedidos()){
             txtPedido.getText().append(det.getProductoPedido().getNombre()+
