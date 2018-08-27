@@ -22,7 +22,7 @@ public class Pedido {
     private Estado estado;
 
     public Pedido(){
-        this.id = ++Pedido.idGenerator;
+        //this.id = ++Pedido.idGenerator;
         this.itemPedidos = new ArrayList<>();
     }
     public Pedido(Integer nuevoId){

@@ -53,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
         //pedidoDAO= new PedidoDaoJson(this);
         pedidoDAO = new PedidoDAOsql(this);
 
-        if(pedidoDAO.listarTodos().size()>0){
+        //if(pedidoDAO.listarTodos().size()>0){
             pedidoActual=new Pedido();
-        }else{pedidoActual=new Pedido(pedidoDAO.listarTodos().size());}
+        //}else{pedidoActual=new Pedido(pedidoDAO.listarTodos().size());}
 
         txtNombre = findViewById(R.id.txtNombreCliente);
         txtPedido = findViewById(R.id.txtDetallePedido);
